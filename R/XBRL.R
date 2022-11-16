@@ -143,10 +143,7 @@ XBRL <- function() {
     }
     processElements(doc)
     linkbaseNames <- .Call("xbrlGetLinkbaseNames", doc, PACKAGE="XBRL")
-    print(doc)
     importNames <- .Call("xbrlGetImportNames", doc, PACKAGE="XBRL")
-    print("#######################################")
-    print(importNames)
     .Call("xbrlFree", doc, PACKAGE="XBRL")
 
     for (linkbaseName in linkbaseNames) {
@@ -158,10 +155,14 @@ XBRL <- function() {
     }
 
     for (importName in importNames) {
+      print("#######################################")
+
       print(paste0("dname: ", dname))
       print(paste0("importName: ", importName))
       importName <- fixFileName(dname, importName)
       print(paste0("new importName: ", importName))
+      print("#######################################")
+
       if (verbose) {
         cat(file," ==> Schema: ", importName,"\n")
       }
