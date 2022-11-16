@@ -71,7 +71,7 @@ XBRL <- function() {
     cached.file <- paste0(cache.dir, "/", bname)
     if (!file.exists(cached.file)) {
       if (verbose) {
-        cat("Downloading to cache dir...")
+        cat(paste0("Downloading ",file," to cache dir..."))
       }
 
       status <- try(download.file(file, cached.file, quiet = !verbose),
