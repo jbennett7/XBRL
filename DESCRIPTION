@@ -4,8 +4,9 @@ Title: Extraction of Business Financial Information from 'XBRL'
         Documents
 Version: 0.99.19.2
 Date: 2021-10-18
-Author: Roberto Bertolusso
-Maintainer: Roberto Bertolusso <rbertolusso@rice.edu>
+Authors@R: 
+    c(person("Roberto", "Bertolusso", email = "rbertolusso@rice.edu", role = c("aut", "cre")),
+      person("Riaz", "Arbi", email = "riazarbi@gmail.com", role = c("crt")))
 Description: 
   Functions to extract business financial information from
   an Extensible Business Reporting Language ('XBRL') instance file and the
