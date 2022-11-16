@@ -143,7 +143,10 @@ XBRL <- function() {
     }
     processElements(doc)
     linkbaseNames <- .Call("xbrlGetLinkbaseNames", doc, PACKAGE="XBRL")
+    print(doc)
     importNames <- .Call("xbrlGetImportNames", doc, PACKAGE="XBRL")
+    print("#######################################")
+    print(importNames)
     .Call("xbrlFree", doc, PACKAGE="XBRL")
 
     for (linkbaseName in linkbaseNames) {
