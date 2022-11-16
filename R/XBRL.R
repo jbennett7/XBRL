@@ -29,8 +29,7 @@ XBRL <- function() {
   inst.lnkb <- NULL
   
   fixFileName <- function(dname, file.name) {
-    if (substr(file.name, 1, 5) != "http:" |
-        substr(file.name, 1, 6) != "https:") {
+    if (substr(file.name, 1, 5) != "http:" ) {
       if (substr(file.name, 1, 5) == "../..") { ## A better solution is preferred, but it works for now
         file.name <- paste0(dirname(dirname(dname)), "/",  substr(file.name, 7, nchar(file.name)))
       } else if (substr(file.name, 1, 2) == "..") {
@@ -38,8 +37,17 @@ XBRL <- function() {
       } else {
         file.name <- paste0(dname,"/", file.name)
       }
-    }
-    file.name
+    } else if (substr(file.name, 1, 5) != "http:" ) {
+      if (substr(file.name, 1, 5) == "../..") { ## A better solution is preferred, but it works for now
+        file.name <- paste0(dirname(dirname(dname)), "/",  substr(file.name, 7, nchar(file.name)))
+      } else if (substr(file.name, 1, 2) == "..") {
+        file.name <- paste0(dirname(dname), "/", substr(file.name, 4, nchar(file.name)))
+      } else {
+        file.name <- paste0(dname,"/", file.name)
+      }
+      }
+    
+    return(file.name)
   }
 
   setVerbose <- function(newVerbose) {
