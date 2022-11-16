@@ -37,7 +37,7 @@ XBRL <- function() {
       } else {
         file.name <- paste0(dname,"/", file.name)
       }
-    } else if (substr(file.name, 1, 5) != "http:" ) {
+    } else if (substr(file.name, 1, 6) != "https:" ) {
       if (substr(file.name, 1, 5) == "../..") { ## A better solution is preferred, but it works for now
         file.name <- paste0(dirname(dirname(dname)), "/",  substr(file.name, 7, nchar(file.name)))
       } else if (substr(file.name, 1, 2) == "..") {
