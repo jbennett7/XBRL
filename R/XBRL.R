@@ -158,7 +158,10 @@ XBRL <- function() {
     }
 
     for (importName in importNames) {
+      print(paste0("dname: ", dname))
+      print(paste0("importName: ", importName))
       importName <- fixFileName(dname, importName)
+      print(paste0("new importName: ", importName))
       if (verbose) {
         cat(file," ==> Schema: ", importName,"\n")
       }
