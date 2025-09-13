@@ -49,7 +49,7 @@ RcppExport SEXP xbrlProcessFacts(SEXP epaDoc) {
     */
     (char *) itm = (char *) xmlGetProp(fact_node, (xmlChar*) "name");
     //for(char &c : elementId){if(c == ':') c = '_';}
-    elementId[i] = (char *) xmlGetProp(fact_node, (xmlChar*) "name");
+    elementId[i] = itm;
 
     xmlChar *tmp_str;
     if ((tmp_str = xmlGetProp(fact_node, (xmlChar*) "contextRef"))) { 
