@@ -41,7 +41,7 @@ RcppExport SEXP xbrlProcessFacts(SEXP epaDoc) {
   for (int i=0; i < fact_nodeset_ln; i++) {
     xmlNodePtr fact_node = fact_nodeset->nodeTab[i];
 
-    /*
+    /* Old elementId (keeping for comparison).
     if (fact_node->ns->prefix)
       elementId[i] = (char *) ((string) (char *) fact_node->ns->prefix + "_" + (string) (char *) fact_node->name).data();
     else
@@ -49,6 +49,7 @@ RcppExport SEXP xbrlProcessFacts(SEXP epaDoc) {
     */
 
     xmlChar *tmp_str;
+    // Looks like most inline XBRL moved the elementId value to the property `name`
     if((tmp_str = xmlGetProp(fact_node, (xmlChar*) "name"))) {
         elementId[i] = (char *) tmp_str;
         xmlFree(tmp_str);
