@@ -18,7 +18,7 @@ endfunction
 command! -nargs=+ CP call CPChanges(<q-args>)
 function! CPChanges(i_s)
     G add src/*
-    G commit -m a:i_s
+    G commit -m i_s
     G push
 endfunction
 
