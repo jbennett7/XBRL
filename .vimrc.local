@@ -1,3 +1,20 @@
+" Read DESCRIPTION file for package name and version.
+function! ReadDESCRIPTION()
+    let l:config = {}
+    let l:package = ''
+    let l:version = ''
+    for l:line in readfile('DESCRIPTION')
+        if l:line =~ '^Package:'
+            let l:package = split(l:line, ': ', 2)[1]
+        endif
+        if l:line =~ '^Version:'
+            let l:version = split(l:line, ': ', 2)[1]
+        endif
+    endfor
+    return [l:package, l:version]
+endfunction
+
+" Git add commit push (right now only working on `src` c++ code)
 command! -nargs=+ CP call CPChanges(<q-args>)
 function! CPChanges(i_s)
     G add src/*
@@ -5,10 +22,13 @@ function! CPChanges(i_s)
     G push
 endfunction
 
-command! Test call Test()
-function! Test()
-    :let l:dir = "/Users/jbennett/Work/RStudio/XBRL"
-    execute '!R CMD build ' . l:dir
+" Build and install package for testing
+command! BIP call BuildInstallPackage()
+function! BuildInstallPackage()
+    let l:desc = ReadDESCRIPTION()
+    let l:pkg = l:desc[0] . "_" . l:desc[1] . '.tar.gz'
+    echo l:pkg
+    execute '!R CMD build ' :pwd
     <CR>
-    execute '!R CMD install XBRL_0.99.19.2.tar.gz'
+    execute '!R CMD install ' . l:pkg
 endfunction
