@@ -1,0 +1,14 @@
+command! -nargs=+ CP call CPChanges(<q-args>)
+function! CPChanges(i_s)
+    G add src/*
+    G commit -m a:i_s
+    G push
+endfunction
+
+command! Test call Test()
+function! Test()
+    :let l:dir = "/Users/jbennett/Work/RStudio/XBRL"
+    execute '!R CMD build ' . l:dir
+    <CR>
+    execute '!R CMD install XBRL_0.99.19.2.tar.gz'
+endfunction
