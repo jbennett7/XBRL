@@ -32,3 +32,10 @@ function! BuildInstallPackage()
     <CR>
     execute '!R CMD install ' . l:pkg
 endfunction
+
+command! RunTests call Tests()
+function! Tests()
+    :BIP
+    let l:functional = 'tests/functional/'
+    :!R --no-save < tests/functional/inlineXBRL.R
+endfunction
