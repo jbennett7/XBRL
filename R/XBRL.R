@@ -30,13 +30,10 @@ XBRL <- function() {
   
   fixFileName <- function(dname, file.name) {
     if (!(substr(file.name, 1, 5) %in% c("http:", "https" ))) {
-      if (substr(file.name, 1, 5) == "../..") { ## A better solution is preferred, but it works for now
-        file.name <- paste0(dirname(dirname(dname)), "/",  substr(file.name, 7, nchar(file.name)))
-      } else if (substr(file.name, 1, 2) == "..") {
-        file.name <- paste0(dirname(dname), "/", substr(file.name, 4, nchar(file.name)))
-      } else {
-        file.name <- paste0(dname,"/", file.name)
+      if (!startsWith(file.name, "/")) {
+        file.name <- file.path(dname, file.name)
       }
+      file.name <- normalizePath(file.name, mustWork = FALSE)
     }
     return(file.name)
   }
@@ -58,7 +55,7 @@ XBRL <- function() {
     if (!(gsub("^(http|https|ftp)://.*$", "\\1", file) %in% c("http", "https", "ftp"))) {
       return (file)
     }
-    bname <- basename(file)
+    bname <- gsub("[^A-Za-z0-9._-]", "_", file)
     cached.file <- paste0(cache.dir, "/", bname)
     if (!file.exists(cached.file)) {
       if (verbose) {
