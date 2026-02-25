@@ -52,13 +52,16 @@ RcppExport SEXP xbrlProcessArcs(SEXP epaDoc, SEXP arcTypeS) {
   xmlNodeSetPtr typeLink_nodeset = typeLink_res->nodesetval;
 
   xmlChar *tmp_str;
+  string arcExpr_str = "*[local-name()='" + arcType_str + "Arc']";
+  xmlXPathCompExprPtr arcExpr = xmlXPathCompile((xmlChar*) arcExpr_str.data());
+  xmlXPathCompExprPtr locExpr = xmlXPathCompile((xmlChar*) "*[local-name()='loc']");
   int r=0;
   for (int i=0; i < typeLink_nodeset->nodeNr; i++) {
     xmlNodePtr typeLink_node = typeLink_nodeset->nodeTab[i];
     context->node = typeLink_node;  // Search inside this typeLink_node.
-    xmlXPathObjectPtr typeArc_res = xmlXPathEvalExpression((xmlChar*) ("*[local-name()='" + arcType_str + "Arc']").data(), context);
+    xmlXPathObjectPtr typeArc_res = xmlXPathCompiledEval(arcExpr, context);
     xmlNodeSetPtr typeArc_nodeset = typeArc_res->nodesetval;
-    xmlXPathObjectPtr loc_res = xmlXPathEvalExpression((xmlChar*) "*[local-name()='loc']", context);
+    xmlXPathObjectPtr loc_res = xmlXPathCompiledEval(locExpr, context);
     xmlNodeSetPtr loc_nodeset = loc_res->nodesetval;
 
     for (int j=0; j < typeArc_nodeset->nodeNr; j++) {
@@ -152,6 +155,8 @@ RcppExport SEXP xbrlProcessArcs(SEXP epaDoc, SEXP arcTypeS) {
     xmlXPathFreeObject(typeArc_res);
   }
   xmlXPathFreeObject(typeLink_res);
+  xmlXPathFreeCompExpr(arcExpr);
+  xmlXPathFreeCompExpr(locExpr);
   xmlXPathFreeContext(context);
 
   return DataFrame::create(Named("roleId")=roleId,
