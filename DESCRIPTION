@@ -6,7 +6,7 @@ Version: 1.0.0
 Date: 2026-02-25
 Authors@R: 
     c(person("Roberto", "Bertolusso", email = "rbertolusso@rice.edu", role = "aut"),
-      person("Riaz", "Arbi", email = "riazarbi@gmail.com", role = "crb"),
+      person("Riaz", "Arbi", email = "riazarbi@gmail.com", role = "ctb"),
       person("Joseph", "Bennett", email = "jbennett@jbennettconsulting.com", role = c("aut", "cre")))
 Description: 
   Functions to extract business financial information from
