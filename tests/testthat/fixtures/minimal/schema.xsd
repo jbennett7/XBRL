@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:xbrli="http://www.xbrl.org/2003/instance"
+           xmlns:link="http://www.xbrl.org/2003/linkbase"
+           xmlns:xlink="http://www.w3.org/1999/xlink"
+           targetNamespace="http://example.com/acme"
+           elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo>
+      <link:linkbaseRef xlink:type="simple"
+                        xlink:href="labels.xml"
+                        xlink:role="http://www.xbrl.org/2003/role/labelLinkbaseRef"/>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="Revenue"
+              id="acme_Revenue"
+              type="xbrli:monetaryItemType"
+              substitutionGroup="xbrli:item"
+              xbrli:periodType="duration"
+              xbrli:balance="credit"/>
+</xs:schema>
