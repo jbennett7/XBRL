@@ -20,5 +20,9 @@ xbrlParse <- function(file) {
   if(!file.exists(file)) {
     stop(file, " does not exists. Aborting.\n")
   }
-  .Call("xbrlParse", file, PACKAGE="XBRL")
+  doc <- .Call("xbrlParse", file, PACKAGE="XBRL")
+  if(is.null(doc)) {
+    stop("Failed to parse XML file: ", file, "\n")
+  }
+  doc
 }

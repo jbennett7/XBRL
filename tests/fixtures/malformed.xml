@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+     Used in tests/unit/test_xbrl_parse.R.
+     Fix xbrlParse returns NULL silently instead of error.
+--> 
+<unclosed>
