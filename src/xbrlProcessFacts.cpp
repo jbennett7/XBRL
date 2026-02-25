@@ -51,10 +51,10 @@ RcppExport SEXP xbrlProcessFacts(SEXP epaDoc) {
     xmlChar *tmp_str;
     // Looks like most inline XBRL moved the elementId value to the property `name`
     if((tmp_str = xmlGetProp(fact_node, (xmlChar*) "name"))) {
-        for(char &c : (char *) tmp_str){if(c == ':'){c = '_'}}
+        for(int j = 0; tmp_str[j]; j++) { if(tmp_str[j] == ':') tmp_str[j] = '_'; }
         elementId[i] = (char *) tmp_str;
         xmlFree(tmp_str);
-    } else if (fact_node->ns->prefix) {
+    } else if (fact_node->ns && fact_node->ns->prefix) {
         elementId[i] = (char *) ((string) (char *) fact_node->ns->prefix + '_' + (string) (char *) fact_node->name).data();
     } else {
         elementId[i] = (char *) fact_node->name;
@@ -105,7 +105,10 @@ RcppExport SEXP xbrlProcessFacts(SEXP epaDoc) {
     } else {
       factId[i] = NA_STRING;
     }
-    ns[i] = (char *) fact_node->ns->href;
+    if (fact_node->ns && fact_node->ns->href)
+        ns[i] = (char *) fact_node->ns->href;
+    else
+        ns[i] = NA_STRING;
   }
   xmlXPathFreeObject(fact_res);
 

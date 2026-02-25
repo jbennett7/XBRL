@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Used in tests/unit/test_null_ns_facts.R
+  Test that if fact_node->ns is NULL it will not crash.
+  This can occur at xbrlProcessFacts.ccp:57 and 108
+-->
+<document>
+  <fact contextRef="ctx1" unitRef="usd" decimals="-3" id="f1">1000000</fact>
+</document>
