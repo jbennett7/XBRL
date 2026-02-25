@@ -199,7 +199,6 @@ XBRL <- function() {
   }
   
   processLabels <- function(doc) {
-    pre.length <- length(self$label)
     self$label <<- rbind(self$label,
                          ans <- .Call("xbrlProcessLabels", doc, PACKAGE="XBRL"))
     if (!is.null(ans)) {
@@ -212,7 +211,6 @@ XBRL <- function() {
   }
   
   processPresentations <- function(doc) {
-    pre.length <- length(self$presentation)
     self$presentation <<- rbind(self$presentation,
                                 ans <- .Call("xbrlProcessArcs", doc, "presentation", PACKAGE="XBRL"))
     if (!is.null(ans)) {
@@ -225,7 +223,6 @@ XBRL <- function() {
   }
   
   processDefinitions <- function(doc) {
-    pre.length <- length(self$definition)
     self$definition <<- rbind(self$definition,
                               ans <- .Call("xbrlProcessArcs", doc, "definition", PACKAGE="XBRL"))
     if (!is.null(ans)) {
@@ -238,7 +235,6 @@ XBRL <- function() {
   }
   
   processCalculations <- function(doc) {
-    pre.length <- length(self$calculation)
     self$calculation <<- rbind(self$calculation,
                                ans <- .Call("xbrlProcessArcs", doc, "calculation", PACKAGE="XBRL"))
     if (!is.null(ans)) {
