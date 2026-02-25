@@ -1,9 +1,7 @@
-library(XBRL)
-library(testthat)
-
 test_that("xbrlParse stops cleanly on malformed XML", {
+    fixture <- test_path("fixtures/malformed.xml")
     expect_error(
-        xbrlParse("tests/fixtures/malformed.xml"),
+        xbrlParse(fixture),
         "Failed to parse"
     )
 })
