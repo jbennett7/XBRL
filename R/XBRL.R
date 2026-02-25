@@ -187,14 +187,10 @@ XBRL <- function() {
     }
     doc <- XBRL::xbrlParse(file)
 
-    ## We assume there can be only one type per linkbase file
-    if (!processLabels(doc)) {
-      if (!processPresentations(doc)) {
-        if (!processDefinitions(doc)) {
-          processCalculations(doc)
-        }
-      }
-    }
+    processLabels(doc)
+    processPresentations(doc)
+    processDefinitions(doc)
+    processCalculations(doc)
     .Call("xbrlFree", doc, PACKAGE="XBRL")
   }
   
