@@ -2,8 +2,8 @@ Package: XBRL
 Type: Package
 Title: Extraction of Business Financial Information from 'XBRL'
         Documents
-Version: 0.99.19.2
-Date: 2021-10-18
+Version: 1.0.0
+Date: 2026-02-25
 Authors@R: 
     c(person("Roberto", "Bertolusso", email = "rbertolusso@rice.edu", role = c("aut", "cre")),
       person("Riaz", "Arbi", email = "riazarbi@gmail.com", role = c("crt")))

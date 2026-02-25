@@ -17,6 +17,11 @@ test_that("xbrlDoAll parses minimal fixture end-to-end", {
   expect_equal(result$context$startDate,  "2023-01-01")
   expect_equal(result$context$endDate,    "2023-12-31")
 
+  # dimension (minimal fixture has no dimensional contexts)
+  expect_true(!is.null(result$dimension))
+  expect_equal(nrow(result$dimension), 0)
+  expect_equal(names(result$dimension), c("contextId", "dimension", "value"))
+
   # unit
   expect_equal(nrow(result$unit), 1)
   expect_equal(result$unit$unitId,  "USD")

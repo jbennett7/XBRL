@@ -19,7 +19,7 @@
 XBRL <- function() {
   self <- list(element=NULL, role=NULL,
                label=NULL, presentation=NULL, definition=NULL, calculation=NULL,
-               context=NULL, unit=NULL, fact=NULL, footnote=NULL)
+               context=NULL, dimension=NULL, unit=NULL, fact=NULL, footnote=NULL)
   
   cache.dir <- NULL
   discovered.files <- NULL
@@ -254,7 +254,9 @@ XBRL <- function() {
     if (verbose) {
       cat("Contexts\n")
     }
-    self$context <<- .Call("xbrlProcessContexts", doc.inst, PACKAGE="XBRL")
+    result <- .Call("xbrlProcessContexts", doc.inst, PACKAGE="XBRL")
+    self$context <<- result$context
+    self$dimension <<- result$dimension
   }
   
   processFacts <- function() {

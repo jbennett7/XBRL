@@ -16,7 +16,50 @@
 // along with XBRL. If not, see <http://www.gnu.org/licenses/>.
 
 #include "XBRL.h"
+#include <vector>
 
+// Extract explicitMember and typedMember children from a container node
+// (either <segment> or <scenario>) into the dimension output vectors.
+static void extract_dims(xmlDocPtr doc,
+                         xmlNodePtr container,
+                         const string& ctx_id,
+                         vector<string>& dim_ctx,
+                         vector<string>& dim_name,
+                         vector<string>& dim_value) {
+  xmlNodePtr member = container->xmlChildrenNode;
+  while (member) {
+    if (!xmlStrcmp(member->name, (xmlChar*) "explicitMember")) {
+      xmlChar* dim = xmlGetProp(member, (xmlChar*) "dimension");
+      xmlChar* val = xmlNodeListGetString(doc, member->xmlChildrenNode, 1);
+      dim_ctx.push_back(ctx_id);
+      dim_name.push_back(dim ? string((char*)dim) : "");
+      dim_value.push_back(val ? string((char*)val) : "");
+      if (dim) xmlFree(dim);
+      if (val) xmlFree(val);
+    } else if (!xmlStrcmp(member->name, (xmlChar*) "typedMember")) {
+      xmlChar* dim = xmlGetProp(member, (xmlChar*) "dimension");
+      // value is the text content of the first child element
+      string val_str;
+      xmlNodePtr child = member->xmlChildrenNode;
+      while (child) {
+        if (child->type == XML_ELEMENT_NODE) {
+          xmlChar* val = xmlNodeListGetString(doc, child->xmlChildrenNode, 1);
+          if (val) {
+            val_str = string((char*)val);
+            xmlFree(val);
+          }
+          break;
+        }
+        child = child->next;
+      }
+      dim_ctx.push_back(ctx_id);
+      dim_name.push_back(dim ? string((char*)dim) : "");
+      dim_value.push_back(val_str);
+      if (dim) xmlFree(dim);
+    }
+    member = member->next;
+  }
+}
 
 RcppExport SEXP xbrlProcessContexts(SEXP epaDoc) {
   xmlDocPtr doc = (xmlDocPtr) R_ExternalPtrAddr(epaDoc);
@@ -27,118 +70,99 @@ RcppExport SEXP xbrlProcessContexts(SEXP epaDoc) {
   int context_nodeset_ln = context_nodeset->nodeNr;
   xmlXPathFreeContext(context);
 
+  // Context table (one row per context)
   CharacterVector contextId(context_nodeset_ln);
   CharacterVector scheme(context_nodeset_ln);
   CharacterVector identifier(context_nodeset_ln);
   CharacterVector startDate(context_nodeset_ln);
   CharacterVector endDate(context_nodeset_ln);
-  CharacterVector dimension1(context_nodeset_ln);
-  CharacterVector value1(context_nodeset_ln);
-  CharacterVector dimension2(context_nodeset_ln);
-  CharacterVector value2(context_nodeset_ln);
-  CharacterVector dimension3(context_nodeset_ln);
-  CharacterVector value3(context_nodeset_ln);
-  CharacterVector dimension4(context_nodeset_ln);
-  CharacterVector value4(context_nodeset_ln);
 
-  for (int i=0; i < context_nodeset_ln; i++) {
+  // Dimension table (normalized; grows as members are found)
+  vector<string> dim_ctx, dim_name, dim_value;
+
+  for (int i = 0; i < context_nodeset_ln; i++) {
     xmlNodePtr context_node = context_nodeset->nodeTab[i];
     xmlChar *tmp_str;
+
+    string ctx_id;
     if ((tmp_str = xmlGetProp(context_node, (xmlChar*) "id"))) { 
-      contextId[i] = (char *) tmp_str;
+      ctx_id = string((char*)tmp_str);
+      contextId[i] = (char*)tmp_str;
       xmlFree(tmp_str);
     } else {
       contextId[i] = NA_STRING;
     }
-    scheme[i] = identifier[i] = startDate[i] = endDate[i] =
-      dimension1[i] = value1[i] = dimension2[i] = value2[i] =
-      dimension3[i] = value3[i] = dimension4[i] = value4[i] = NA_STRING;
+
+    scheme[i] = identifier[i] = startDate[i] = endDate[i] = NA_STRING;
+
     xmlNodePtr child_node = context_node->xmlChildrenNode;
     while (child_node) {
       if (!xmlStrcmp(child_node->name, (xmlChar*) "entity")) {
-	xmlNodePtr gchild_node = child_node->xmlChildrenNode;
-	while (gchild_node) {
-	  if (!xmlStrcmp(gchild_node->name, (xmlChar*) "identifier")) {
-	    if ((tmp_str = xmlGetProp(gchild_node, (xmlChar*) "scheme"))) { 
-	      scheme[i] = (char *) tmp_str;
-	      xmlFree(tmp_str);
-	    }
-	    if ((tmp_str = xmlNodeListGetString(doc, gchild_node->xmlChildrenNode, 1))) {
-	      identifier[i] = (char *) tmp_str;
-	      xmlFree(tmp_str);
-	    }
-	  } else if (!xmlStrcmp(gchild_node->name, (xmlChar*) "segment")) {
-	    xmlNodePtr ggchild_node = gchild_node->xmlChildrenNode;
-	    int dimn = 1;
-	    while (ggchild_node) {
-	      if (!xmlStrcmp(ggchild_node->name, (xmlChar*) "explicitMember")) {
-		if ((tmp_str = xmlGetProp(ggchild_node, (xmlChar*) "dimension"))) {
-		  if (dimn == 1)
-		    dimension1[i] = (char *) tmp_str;
-		  else if (dimn == 2)
-		    dimension2[i] = (char *) tmp_str;
-		  else if (dimn == 3)
-		    dimension3[i] = (char *) tmp_str;
-		  else if (dimn == 4)
-		    dimension4[i] = (char *) tmp_str;
-		  xmlFree(tmp_str);
-		}
-		if ((tmp_str = xmlNodeListGetString(doc, ggchild_node->xmlChildrenNode, 1))) {
-		  if (dimn == 1)
-		    value1[i] = (char *) tmp_str;
-		  else if (dimn == 2)
-		    value2[i] = (char *) tmp_str;
-		  else if (dimn == 3)
-		    value3[i] = (char *) tmp_str;
-		  else if (dimn == 4)
-		    value4[i] = (char *) tmp_str;
-		  xmlFree(tmp_str);
-		}
-		dimn++;
-	      }
-	      ggchild_node = ggchild_node->next;
-	    }
-	  }
-	  gchild_node = gchild_node->next;
-	}
+        xmlNodePtr gchild_node = child_node->xmlChildrenNode;
+        while (gchild_node) {
+          if (!xmlStrcmp(gchild_node->name, (xmlChar*) "identifier")) {
+            if ((tmp_str = xmlGetProp(gchild_node, (xmlChar*) "scheme"))) {
+              scheme[i] = (char*)tmp_str;
+              xmlFree(tmp_str);
+            }
+            if ((tmp_str = xmlNodeListGetString(doc, gchild_node->xmlChildrenNode, 1))) {
+              identifier[i] = (char*)tmp_str;
+              xmlFree(tmp_str);
+            }
+          } else if (!xmlStrcmp(gchild_node->name, (xmlChar*) "segment")) {
+            extract_dims(doc, gchild_node, ctx_id, dim_ctx, dim_name, dim_value);
+          }
+          gchild_node = gchild_node->next;
+        }
       } else if (!xmlStrcmp(child_node->name, (xmlChar*) "period")) {
-	xmlNodePtr gchild_node = child_node->xmlChildrenNode;
-	while (gchild_node) {
-	  if (!xmlStrcmp(gchild_node->name, (xmlChar*) "startDate")) {
-	    if ((tmp_str = xmlNodeListGetString(doc, gchild_node->xmlChildrenNode, 1))) {
-	      startDate[i] = (char *) tmp_str;
-	      xmlFree(tmp_str);
-	    }
-	  } else if (!xmlStrcmp(gchild_node->name, (xmlChar*) "endDate")) {
-	    if ((tmp_str = xmlNodeListGetString(doc, gchild_node->xmlChildrenNode, 1))) {
-	      endDate[i] = (char *) tmp_str;
-	      xmlFree(tmp_str);
-	    }
-	  } else if (!xmlStrcmp(gchild_node->name, (xmlChar*) "instant")) {
-	    if ((tmp_str = xmlNodeListGetString(doc, gchild_node->xmlChildrenNode, 1))) {
-	      endDate[i] = (char *) tmp_str;
-	      xmlFree(tmp_str);
-	    }
-	  }
-	  gchild_node = gchild_node->next;
-	}
+        xmlNodePtr gchild_node = child_node->xmlChildrenNode;
+        while (gchild_node) {
+          if (!xmlStrcmp(gchild_node->name, (xmlChar*) "startDate")) {
+            if ((tmp_str = xmlNodeListGetString(doc, gchild_node->xmlChildrenNode, 1))) {
+              startDate[i] = (char*)tmp_str;
+              xmlFree(tmp_str);
+            }
+          } else if (!xmlStrcmp(gchild_node->name, (xmlChar*) "endDate")) {
+            if ((tmp_str = xmlNodeListGetString(doc, gchild_node->xmlChildrenNode, 1))) {
+              endDate[i] = (char*)tmp_str;
+              xmlFree(tmp_str);
+            }
+          } else if (!xmlStrcmp(gchild_node->name, (xmlChar*) "instant")) {
+            if ((tmp_str = xmlNodeListGetString(doc, gchild_node->xmlChildrenNode, 1))) {
+              endDate[i] = (char*)tmp_str;
+              xmlFree(tmp_str);
+            }
+          }
+          gchild_node = gchild_node->next;
+        }
+      } else if (!xmlStrcmp(child_node->name, (xmlChar*) "scenario")) {
+        extract_dims(doc, child_node, ctx_id, dim_ctx, dim_name, dim_value);
       }
       child_node = child_node->next;
     }
   }
   xmlXPathFreeObject(context_res);
 
-  return DataFrame::create(Named("contextId")=contextId,
-			   Named("scheme")=scheme,
-			   Named("identifier")=identifier,
-			   Named("startDate")=startDate,
-			   Named("endDate")=endDate,
-			   Named("dimension1")=dimension1,
-			   Named("value1")=value1,
-			   Named("dimension2")=dimension2,
-			   Named("value2")=value2,
-			   Named("dimension3")=dimension3,
-			   Named("value3")=value3,
-			   Named("dimension4")=dimension4,
-			   Named("value4")=value4);
+  int ndims = (int)dim_ctx.size();
+  CharacterVector dim_ctx_cv(ndims), dim_name_cv(ndims), dim_value_cv(ndims);
+  for (int i = 0; i < ndims; i++) {
+    dim_ctx_cv[i]   = dim_ctx[i];
+    dim_name_cv[i]  = dim_name[i];
+    dim_value_cv[i] = dim_value[i];
+  }
+
+  return List::create(
+    Named("context") = DataFrame::create(
+      Named("contextId")  = contextId,
+      Named("scheme")     = scheme,
+      Named("identifier") = identifier,
+      Named("startDate")  = startDate,
+      Named("endDate")    = endDate
+    ),
+    Named("dimension") = DataFrame::create(
+      Named("contextId") = dim_ctx_cv,
+      Named("dimension") = dim_name_cv,
+      Named("value")     = dim_value_cv
+    )
+  );
 }

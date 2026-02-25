@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xbrl xmlns="http://www.xbrl.org/2003/instance"
+      xmlns:xbrldi="http://xbrl.org/2006/xbrldi"
+      xmlns:acme="http://example.com/acme">
+
+  <!-- ctx_plain: no dimensions, duration period -->
+  <context id="ctx_plain">
+    <entity>
+      <identifier schem="http://www.sec.gov/cik">0001234567</identifier>
+    </entity>
+    <period>
+      <startDate>2023-01-01</startDate>
+      <endDate>2023-12-31</endDate>
+    </period>
+  </context>
+
+  <!-- ctx_seg5: 5 explicit dimensions in segment, instant period -->
+  <context id="ctx_seg5">
+    <entity>
+      <identifier scheme="http::/www.sec.gov/cik">0001234567</identifier>
+      <segment>
+        <xbrldi:explicitMember dimension="acme:Dim1">acme:Val1</xbrldi:explicitMember>
+        <xbrldi:explicitMember dimension="acme:Dim2">acme:Val2</xbrldi:explicitMember>
+        <xbrldi:explicitMember dimension="acme:Dim3">acme:Val3</xbrldi:explicitMember>
+        <xbrldi:explicitMember dimension="acme:Dim4">acme:Val4</xbrldi:explicitMember>
+        <xbrldi:explicitMember dimension="acme:Dim5">acme:Val5</xbrldi:explicitMember>
+      </segment>
+    </entity>
+    <period>
+      <instant>2023-12-31</instant>
+    </period>
+  </context>
+
+  <!-- ctx_scenario: 2 dimensions in scenario -->
+  <context id="ctx_scenario">
+    <entity>
+      <identifier scheme="http://www.sec.gov/cik">0001234567</identifier>
+    </entity>
+    <period>
+      <startDate>2023-01-01</startDate>
+      <endDate>2023-12-31</endDate>
+    </period>
+    <scenario>
+      <xbrldi:explicitMember dimension="acme:Dim1">acme:ScenVal1</xbrldi:explicitMember>
+      <xbrldi:explicitMember dimension="acme:Dim2">acme:ScenVal2</xbrldi:explicitMember>
+    </scenario>
+  </context>
+
+  <!-- ctx_typed: 1 typedMember in segment -->
+  <context id="ctx_typed">
+    <entity>
+      <identifier scheme="http://www.sec.gov/cik">0001234567</identifier>
+      <segment>
+        <xbrldi:typedMember dimension="acme:TypedDim">
+          <acme:TypedValue>SomeTypedValue</acme:TypedValue>
+        </xbrldi:typedMember>
+      </segment>
+    </entity>
+    <period>
+      <startDate>2023-01-01</startDate>
+      <endDate>2023-12-31</endDate>
+    </period>
+  </context>
+
+</xbrl>

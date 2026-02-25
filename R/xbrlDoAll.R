@@ -48,6 +48,7 @@ xbrlDoAll <- function(file.inst, cache.dir="xbrl.Cache",
     write.csv(xbrl.vars$definition, file=paste0(prefix.out, "_definitions.csv"))
     write.csv(xbrl.vars$calculation, file=paste0(prefix.out, "_calculations.csv"))
     write.csv(xbrl.vars$context, file=paste0(prefix.out, "_contexts.csv"))
+    write.csv(xbrl.vars$dimension, file=paste0(prefix.out, "_dimensions.csv"))
     write.csv(xbrl.vars$fact, file=paste0(prefix.out, "_facts.csv"))
     write.csv(xbrl.vars$unit, file=paste0(prefix.out, "_units.csv"))
     write.csv(xbrl.vars$footnote, file=paste0(prefix.out, "_footnotes.csv"))
