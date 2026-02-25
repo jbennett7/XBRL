@@ -11,7 +11,7 @@ test_that("xbrlProcessContexts returns a list with context and dimension tables"
   # context table: 4 rows, 5 columns (no dimension1..4 wide columns)
   expect_equal(nrow(result$context), 4)
   expect_equal(names(result$context),
-    c("contextId", "scheme", "identifier", "startDate", "endDate"))
+    c("contextId", "scheme", "identifier", "startDate", "endDate", "instant"))
 
   # dimension table: 5 (seg5) + 2 (scenario) + 1 (typed) = 8 rows
   expect_equal(nrow(result$dimension), 8)
@@ -75,4 +75,8 @@ test_that("xbrlProcessContexts: instant period stored as endDate, startDate is N
   ctx <- result$context[result$context$contextId == "ctx_seg5", ]
   expect_equal(ctx$endDate, "2023-12-31")
   expect_true(is.na(ctx$startDate))
+  expect_true(ctx$instant)
+
+  ctx_plain <- result$context[result$context$contextId == "ctx_plain", ]
+  expect_false(ctx_plain$instant)
 })

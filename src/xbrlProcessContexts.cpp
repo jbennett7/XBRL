@@ -79,6 +79,7 @@ RcppExport SEXP xbrlProcessContexts(SEXP epaDoc) {
   CharacterVector identifier(context_nodeset_ln);
   CharacterVector startDate(context_nodeset_ln);
   CharacterVector endDate(context_nodeset_ln);
+  LogicalVector instant_flag(context_nodeset_ln, false);
 
   // Dimension table (normalized; grows as members are found)
   vector<string> dim_ctx, dim_name, dim_value;
@@ -133,6 +134,7 @@ RcppExport SEXP xbrlProcessContexts(SEXP epaDoc) {
           } else if (!xmlStrcmp(gchild_node->name, (xmlChar*) "instant")) {
             if ((tmp_str = xmlNodeListGetString(doc, gchild_node->xmlChildrenNode, 1))) {
               endDate[i] = (char*)tmp_str;
+              instant_flag[i] = true;
               xmlFree(tmp_str);
             }
           }
@@ -160,7 +162,8 @@ RcppExport SEXP xbrlProcessContexts(SEXP epaDoc) {
       Named("scheme")     = scheme,
       Named("identifier") = identifier,
       Named("startDate")  = startDate,
-      Named("endDate")    = endDate
+      Named("endDate")    = endDate,
+      Named("instant")    = instant_flag
     ),
     Named("dimension") = DataFrame::create(
       Named("contextId") = dim_ctx_cv,
