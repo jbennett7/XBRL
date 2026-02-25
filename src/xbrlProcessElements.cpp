@@ -25,7 +25,10 @@ RcppExport SEXP xbrlProcessElements(SEXP epaDoc) {
   xmlXPathObjectPtr schema_res = xmlXPathEvalExpression((xmlChar*) "//*[local-name()='schema']", context);
   xmlNodeSetPtr schema_nodeset = schema_res->nodesetval;
   xmlChar *ns_txt;
-  ns_txt = xmlGetProp(schema_nodeset->nodeTab[0], (xmlChar*) "targetNamespace");
+  if (schema_nodeset->nodeNr > 0)
+      ns_txt = xmlGetProp(schema_nodeset->nodeTab[0], (xmlChar*) "targetNamespace");
+  else
+      ns_txt = NULL;
 
   xmlXPathObjectPtr element_res = xmlXPathEvalExpression((xmlChar*) "//*[local-name()='element'][@*[local-name()='periodType']]", context);
   xmlNodeSetPtr element_nodeset = element_res->nodesetval;
@@ -88,7 +91,10 @@ RcppExport SEXP xbrlProcessElements(SEXP epaDoc) {
     } else {
       balance[i] = NA_STRING;
     }
-    ns[i] = (char *) ns_txt;
+    if (ns_txt)
+        ns[i] = (char *) ns_txt;
+    else
+        ns[i] = NA_STRING;
   }
   xmlFree(ns_txt);
   xmlXPathFreeObject(element_res);

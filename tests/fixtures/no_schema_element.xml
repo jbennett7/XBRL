@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document xmlns:xbrli="http://www.xbrl.org/2003/instance">
+  <element name="Assets" type="xbrli:monetaryItemType"
+           substitutionGroup="xbrli:item"
+           xbrli:periodType="instant"/>
+</document>
