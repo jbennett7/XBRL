@@ -9,7 +9,7 @@ ua <- 'jbennett@jbennettconsulting.com'
 options(HTTPUserAgent = ua)
 inst <- xbrlDoAll(hlink)
 
-test_that(desc = "Test that the file was downloaed correctly", code = {
+test_that(desc = "Test that the file was downloaded correctly", code = {
     expect_that(class(inst) == "list", condition = equals(TRUE))
 })
 
