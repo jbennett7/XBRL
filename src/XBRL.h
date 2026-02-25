@@ -26,7 +26,4 @@
 #include <libxml/parser.h>
 #include <libxml/xpath.h>
 
-using namespace std;
-using namespace Rcpp;
-
 #endif

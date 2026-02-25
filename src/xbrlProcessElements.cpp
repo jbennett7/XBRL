@@ -17,6 +17,7 @@
 
 #include "XBRL.h"
 
+using namespace Rcpp;
 
 RcppExport SEXP xbrlProcessElements(SEXP epaDoc) {
   xmlDocPtr doc = (xmlDocPtr) R_ExternalPtrAddr(epaDoc);

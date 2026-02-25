@@ -18,6 +18,8 @@
 #include <unordered_map>
 #include "XBRL.h"
 
+using namespace std;
+using namespace Rcpp;
 
 RcppExport SEXP xbrlProcessLabels(SEXP epaDoc) {
   xmlDocPtr doc = (xmlDocPtr) R_ExternalPtrAddr(epaDoc);

@@ -17,6 +17,7 @@
 
 #include "XBRL.h"
 
+using namespace Rcpp;
 
 RcppExport SEXP xbrlParse(SEXP fileS) {
   CharacterVector file(fileS);

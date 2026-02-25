@@ -18,6 +18,9 @@
 #include "XBRL.h"
 #include <vector>
 
+using namespace std;
+using namespace Rcpp;
+
 // Extract explicitMember and typedMember children from a container node
 // (either <segment> or <scenario>) into the dimension output vectors.
 static void extract_dims(xmlDocPtr doc,
