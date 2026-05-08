@@ -16,6 +16,9 @@
 // along with XBRL. If not, see <http://www.gnu.org/licenses/>.
 
 #include "XBRL.h"
+#include <cmath>
+#include <sstream>
+#include <iomanip>
 
 using namespace std;
 using namespace Rcpp;
@@ -110,7 +113,51 @@ RcppExport SEXP xbrlProcessFacts(SEXP epaDoc) {
     if (fact_node->ns && fact_node->ns->href)
         ns[i] = (char *) fact_node->ns->href;
     else
-        ns[i] = NA_STRING;
+      ns[i] = NA_STRING;
+    // Apply iXBRL scale and sign to produce the true XBRL value.
+    // Rendered value in HTML x 10^scale, negated if sign=="-".
+    {
+      bool has_scale = (scale[i] != NA_STRING);
+      bool has_sign  = (sign[i]  != NA_STRING);
+
+      if ((has_scale || has_sign) && fact[i] != NA_STRING) {
+        std::string raw = Rcpp::as<std::string>(fact[i]);
+
+        // Strip formatting: keep digits, leading minus, decimal point
+        std::string clean;
+        for (unsigned char c : raw) {
+          if (c == '-' || c == '.' || (c >= '0' && c <= '9')) clean += c;
+        }
+
+        if (!clean.empty()) {
+          try {
+            double val = std::stod(clean);
+
+            if (has_scale) {
+              int  sc = std::stoi(Rcpp::as<std::string>(scale[i]));
+              long long mult = 1;
+              for (int k = 0; k < std::abs(sc); k++) mult *= 10;
+              if (sc >= 0) val *= (double)mult;
+              else         val /= (double)mult;
+            }
+
+            if (has_sign && Rcpp::as<std::string>(sign[i]) == "-") val = -val;
+
+            // Write back as clean integer string when value is whole
+            std::ostringstream oss;
+            long long ival = (long long)std::round(val);
+            if (std::abs(val - (double)ival) < 0.001) oss << ival;
+            else oss << std::setprecision(10) << val;
+
+            fact[i] = oss.str();
+            sign[i] = NA_STRING;  // applied; prevent double-application
+
+          } catch(...) {
+            // Non-numeric fact (text, boolean) - leave unchanged
+          }
+        }
+      }
+    }
   }
   xmlXPathFreeObject(fact_res);
 

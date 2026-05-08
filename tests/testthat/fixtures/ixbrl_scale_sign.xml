@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Fixture for test-ixbrl-scale-sign.R
+  Tests that iXBRL scale and sign are applied to produce the true XBRL value.
+-->
+<document>
+  <!-- scale only: 1730 * 10^3 = 1730000 -->
+  <ScaledFact   contextRef="ctx1" unitRef="usd" decimals="-3" scale="3" id="f1">1730</ScaledFact>
+  <!-- sign only: negated = -100 -->
+  <SignedFact   contextRef="ctx1" unitRef="usd" decimals="-3" sign="-" id="f2">100</SignedFact>
+  <!-- both: 293 * 10^3 = 293000, negated = -293000 (Accumulated Deficit style) -->
+  <DeficitFact   contextRef="ctx1" unitRef="usd" decimals="-3" scale="3" sign="-" id="f3">293</DeficitFact>
+  <!-- neither: value unchanged -->
+  <PlainFact  contextRef="ctx1" unitRef="usd" decimals="-3" id="f4">500000</PlainFact>
+  <!-- comma-formatted number with scale: 1,730 * 10^3 = 1730000 -->
+  <FormattedFact contextRef="ctx1" unitRef="usd" decimals="-3" scale="3" id="f5">1,730</FormattedFact>
+</document>
