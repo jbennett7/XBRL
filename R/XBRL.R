@@ -99,7 +99,8 @@ XBRL <- function() {
   }
   
   getSchemaName <- function() {
-    fixFileName(dname.inst, .Call("xbrlGetSchemaName", doc.inst, PACKAGE="XBRL"))
+    vapply(.Call("xbrlGetSchemaName", doc.inst, PACKAGE="XBRL"),
+           fixFileName, character(1), dname = dname.inst)
   }
   
   processSchema <- function(file, level=1) {

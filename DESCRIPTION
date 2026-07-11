@@ -2,7 +2,7 @@ Package: XBRL
 Type: Package
 Title: Extraction of Business Financial Information from 'XBRL'
         Documents
-Version: 1.0.0
+Version: 1.0.1
 Date: 2026-02-25
 Authors@R: 
     c(person("Roberto", "Bertolusso", email = "rbertolusso@rice.edu", role = "aut"),
@@ -20,3 +20,4 @@ LinkingTo: Rcpp
 NeedsCompilation: yes
 Suggests: 
     testthat (>= 3.0.0)
+Config/roxygen2/version: 8.0.0

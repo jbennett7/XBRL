@@ -25,7 +25,9 @@ xbrlDoAll <- function(file.inst, cache.dir="xbrl.Cache",
     xbrl$setCacheDir(cache.dir)
   }
   xbrl$openInstance(file.inst)
-  xbrl$processSchema(xbrl$getSchemaName())
+  for (schemaName in xbrl$getSchemaName()) {
+      xbrl$processSchema(schemaName)
+  }
   xbrl$processContexts()
   xbrl$processFacts()
   xbrl$processUnits()
