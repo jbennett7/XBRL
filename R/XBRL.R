@@ -133,6 +133,16 @@ XBRL <- function() {
     processElements(doc)
     linkbaseNames <- .Call("xbrlGetLinkbaseNames", doc, PACKAGE="XBRL")
     importNames <- .Call("xbrlGetImportNames", doc, PACKAGE="XBRL")
+
+    if (length(linkbaseNames) == 0) {
+      # DFIN ActiveDisclosure-style filings (MSFT, Kohl's) embed the linkbases
+      # directly in the schema instead of referencing separate files.
+      processLabels(doc)
+      processPresentations(doc)
+      processDefinitions(doc)
+      processCalculations(doc)
+    }
+
     .Call("xbrlFree", doc, PACKAGE="XBRL")
 
     for (linkbaseName in linkbaseNames) {
