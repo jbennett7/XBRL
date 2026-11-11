@@ -27,9 +27,9 @@ test_that("xbrlProcessContexts: >4 explicit dimensions in segment all captured",
   dims <- result$dimension[result$dimension$contextId == "ctx_seg5", ]
   expect_equal(nrow(dims), 5)
   expect_equal(sort(dims$dimension),
-    c("acme:Dim1", "acme:Dim2", "acme:Dim3", "acme:Dim4", "acme:Dim5"))
+    c("acme_Dim1", "acme_Dim2", "acme_Dim3", "acme_Dim4", "acme_Dim5"))
   expect_equal(sort(dims$value),
-    c("acme:Val1", "acme:Val2", "acme:Val3", "acme:Val4", "acme:Val5"))
+    c("acme_Val1", "acme_Val2", "acme_Val3", "acme_Val4", "acme_Val5"))
 })
 
 test_that("xbrlProcessContexts: scenario dimensions captured", {
@@ -40,8 +40,8 @@ test_that("xbrlProcessContexts: scenario dimensions captured", {
 
   dims <- result$dimension[result$dimension$contextId == "ctx_scenario", ]
   expect_equal(nrow(dims), 2)
-  expect_equal(sort(dims$dimension), c("acme:Dim1", "acme:Dim2"))
-  expect_equal(sort(dims$value), c("acme:ScenVal1", "acme:ScenVal2"))
+  expect_equal(sort(dims$dimension), c("acme_Dim1", "acme_Dim2"))
+  expect_equal(sort(dims$value), c("acme_ScenVal1", "acme_ScenVal2"))
 })
 
 test_that("xbrlProcessContexts: typedMember captured", {
@@ -52,7 +52,7 @@ test_that("xbrlProcessContexts: typedMember captured", {
 
   dims <- result$dimension[result$dimension$contextId == "ctx_typed", ]
   expect_equal(nrow(dims), 1)
-  expect_equal(dims$dimension[1], "acme:TypedDim")
+  expect_equal(dims$dimension[1], "acme_TypedDim")
   expect_equal(dims$value[1], "SomeTypedValue")
 })
 

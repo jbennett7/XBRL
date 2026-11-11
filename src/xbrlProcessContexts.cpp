@@ -21,6 +21,14 @@
 using namespace std;
 using namespace Rcpp;
 
+// QName "prefix:Local" -> scheam id "prefix_Local", same convention as fact elementIds
+static string qname_to_id(const char* q) {
+    string s(q);
+    size_t p = s.find(':');
+    if (p != string::npos) s[p] = '_';
+    return s;
+}
+
 // Extract explicitMember and typedMember children from a container node
 // (either <segment> or <scenario>) into the dimension output vectors.
 static void extract_dims(xmlDocPtr doc,
@@ -35,8 +43,8 @@ static void extract_dims(xmlDocPtr doc,
       xmlChar* dim = xmlGetProp(member, (xmlChar*) "dimension");
       xmlChar* val = xmlNodeListGetString(doc, member->xmlChildrenNode, 1);
       dim_ctx.push_back(ctx_id);
-      dim_name.push_back(dim ? string((char*)dim) : "");
-      dim_value.push_back(val ? string((char*)val) : "");
+      dim_name.push_back(dim ? qname_to_id((char*)dim) : "");
+      dim_value.push_back(val ? qname_to_id((char*)val) : "");
       if (dim) xmlFree(dim);
       if (val) xmlFree(val);
     } else if (!xmlStrcmp(member->name, (xmlChar*) "typedMember")) {
@@ -56,7 +64,7 @@ static void extract_dims(xmlDocPtr doc,
         child = child->next;
       }
       dim_ctx.push_back(ctx_id);
-      dim_name.push_back(dim ? string((char*)dim) : "");
+      dim_name.push_back(dim ? qname_to_id((char*)dim) : "");
       dim_value.push_back(val_str);
       if (dim) xmlFree(dim);
     }
